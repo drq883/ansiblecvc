@@ -1,0 +1,14 @@
+Using Ansible in an Idempotent Way
+
+- ansible all -m ping
+  worked
+
+- ansible all -m user -a "name=lisa"
+  worked
+
+- ansible all -m command "user list"
+  - is NOT good
+
+- ansible all -m user -a "name=lisa state=absent"
+  worked
+

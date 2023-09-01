@@ -1,0 +1,9 @@
+---
+- name: demonstrate failing tasks
+  gather_facts: no
+  hosts: rocky ubuntu
+  tasks:
+  - name: creating users the wrong way
+    command: useradd anna
+  - debug:
+      msg: run me again and see if you get here

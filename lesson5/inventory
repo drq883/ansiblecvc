@@ -1,0 +1,6 @@
+[dbservers]
+drqubuntu
+
+[webservers]
+drqansible1
+drqansible2

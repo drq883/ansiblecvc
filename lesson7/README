@@ -1,0 +1,45 @@
+7.1 - Manipulate files
+- ansible.builting.copy - copy files
+  - files and directories
+  - contents to copy a line of test to a new file
+
+- ansible.posix.synchrnize (rsync)
+  - rsync command
+  - more efficient than copy
+  - deletate_to to change source host other than localhost
+
+- ansible.builting.fetch - copy files from managed host to control host
+  - will store files by appending hostname/path/to/file to the fetched file
+  - use the flat option to override the behavior
+
+7.2 - Change File Contents
+- ansible.builtin.copy
+- ansible.builtin.replace - based on a regular expression
+  - can be used for simple operations
+  - ansible all -m copy -a "content=hello dest=/tmp/hellofile"
+  - can use replace to update text or delete test
+
+- ansible.builtin.lineinfile
+  - add a single line to a file
+
+- ansible.builtin.blockinfile
+  - add multiple lines to a file
+
+- examples:
+  copy.yml
+
+7.3 - Using the find Module
+- similar to find on linux
+- can be used with regexp, or in combination with lineinfile to perform mods to multiple files
+- can use register with tind to build a playbook to change files regardless of their exact location
+- examples:
+  changeconfig.yaml
+
+7.4 - Using Templates
+- sample configuration file that is combined with env vars to produce site specific configuration files
+- based on the jina2 templating language
+- advanced templates allow conditional structures as well as loop structures
+- examples:
+  
+
+

@@ -1,0 +1,40 @@
+8 - using roles and collections
+
+8.1 - understanding collections
+- make thing more managable
+- more than 3000 different modules
+- different sources
+- collections may contain the following:
+  - modules
+  - roles
+  - plugins
+
+- naming Fully Qualified Collection Name (FQCN) such as:
+  - ansible.netcommon
+- for modules:
+  - ansible.netcommon.cli_command
+  - ansible.builtin.user
+- can add collection setting in play header to shorten use of modules
+- examples:
+  from ansiblecvc/collections
+
+8.2 Understaning roles
+- roles define common tasks for a type of host
+- others publish roles in ansible-galaxy and you can
+  refer to them in your playbooks
+- only need to add site-specific change
+- execution order
+  - tasks in roles are executed before other task in playbook
+  - use pre_tasks to execute tasks before the role
+  - any hanlders triggered by pre_tass are also executed before role
+  - example
+    nginx-role.yml
+    this failed:
+    - ansible-galaxy role install geerlingguy.nginx
+
+8.3 - Working with Galaxy
+- galaxy.ansible.com is a community website for roles and collections
+- ansible-galaxy role
+- ansible-galaxy collection
+- 
+

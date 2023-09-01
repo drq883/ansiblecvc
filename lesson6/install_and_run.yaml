@@ -1,0 +1,22 @@
+
+---
+- name: install and run software
+  hosts: drqansible2
+  tasks:
+  - name: install packages
+    package:
+      name: 
+       - vsftpd
+       - nmap
+       - httpd
+      state: latest
+  - name: run them
+    service:
+      name: "{{ item }}"
+      state: started
+    loop:
+    - vsftpd
+    - httpd
+    - crond
+    - sshd
+

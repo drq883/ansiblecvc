@@ -1,0 +1,12 @@
+[rocky]
+drqansible1
+drqansible2
+
+#[ubuntu]
+#drqubuntu
+
+#[centos]
+#drqcentos
+
+#[freebsd]
+#drqfreebsd

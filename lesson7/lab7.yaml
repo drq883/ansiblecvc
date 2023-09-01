@@ -1,0 +1,44 @@
+---
+- name: copy conf file to local
+  hosts: all
+  tasks:
+  - name: install vsftpd
+    package:
+      name: vsftpd
+      state: latest
+  - name: fetch the file
+    fetch:
+      src: /etc/vsftpd/vsftpd.conf
+      flat: yes
+      dest: /tmp/vsftpd.j2
+
+- name: modify file on control
+  hosts: localhost
+  become: yes
+  tasks:
+  - name: add line to file
+    lineinfile:
+      name: /tmp/vsftpd.j2
+      line: '# written on {{ ansible_hostname }}'
+
+- name: finish it
+  hosts: all
+  tasks:
+  - name: use template
+    template:
+      src: /tmp/vsftpd.j2
+      dest: /etc/vsftpd/vsftpd.conf
+  - name: start it
+    service:
+      name: vsftpd
+      state: started
+      enabled: yes
+      
+  - name: open filewall
+    firewalld:
+      service: ftp
+      immediate: yes
+      state: enabled
+      permanent: yes
+
+

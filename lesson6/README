@@ -1,0 +1,116 @@
+Using conditionals
+
+6.1 - Overfiew
+
+6.2 - Using Handlers
+  - triggered if another task changed something
+  - executed after all tasks in a play
+  - example handlers.yml
+    - had typo, notify needed next line indented to work
+
+6.3 - Using when to run tasks
+  - ansible_machine == "x86_64"
+  - ansible_distribution_major_versoin == "8"
+  - ansible_memfree_mb == 1024
+  - ansible_memfree_mb < 256
+  - my_variable is defined
+  - my_variable is not defined
+  - my_varilable /* checks for a boolean */
+  - ansible_distribution in supported_distros
+  - examples:
+    distro.yml
+    quicktest.yml
+
+6.4 - Using register to work with task results
+  - record results
+  - use result in conditional or loop
+  - examples:
+    command-output-test.yml
+    register_command.yml /* uses find() function on stdout lines */
+  - ansible drqansible1 -a "vgs"
+    show "rl" as name so change it in the .yml file
+
+6.5 - Using Blocks 
+  - logical group of tasks
+  - if then else
+  - error conditional errors
+    - use block fot define main tasks to run
+    - use rescue to define tasks to run if the block fails
+    - use always to alwyar run a task
+  - items can't be used in blocks
+  - examples:
+    blocks.yml
+    blocks2.yml /* modified to user file module */
+    
+6.6 - Using Loops
+  - Items are easy to use
+    - Define a list of items
+    - In the task, use loop (previously: with_items) to process the items
+
+  - using loop array in task
+
+      tasks:
+      - name: remove files
+        file:
+          name: "{{ item }}"
+          state: absent
+        loop:
+          - file1
+          - file2
+
+  - using vars
+
+      vars:
+        my_services:
+        - httpd
+        - vsftpd
+      tasks:
+      - name: start some services
+        service:
+          name: "{{ item }}"
+          state: started
+        loop: "{{ my_services }}"
+
+  - Using arrays
+
+      - name: create users using a loop
+        hosts: all
+        tasks:
+        - name: create users
+          user:
+            name: "{{ item.name }}"
+            state: present
+            groups: "{{ item.groups }}"
+          loop:
+            - name: anna
+              groups: wheel    
+            - name: linda
+              groups: users
+
+  - loops vs. items
+    - loop is the keyword
+    - previous versions of ansible used with_* for same purpose - still supported
+      - with_items: same as loop:
+      - with_file: 
+      - with_sequence: generates a sequence of values
+    - Lesson 10 will describe how to replace with_* with filters
+    - examples:
+      loopservices.yml
+      loopusers.yml
+      install_and_run.yaml /* we created this */
+
+6.7 - Managing failure with the fail Module
+  - looks at the exit status of a task to determine if it failed
+  - when a task fails, ansible aborts the rest of the play on a host
+  - can change that behavior
+    - can use ignore_errors
+    - can use force_handlers
+    - can use failed_when
+  - examples:
+    failure.yml
+    failure2.yml
+
+6.8 - Using assert module
+  - example:
+    assertsize-wrong.yml
+

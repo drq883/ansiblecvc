@@ -1,0 +1,219 @@
+Variables:
+
+5.1 - Separating Code from Site-Specific Configuration
+
+- configuration as code
+
+5.2 - Using Variables in a Playbook
+
+- try to put them somewhere other than playbook
+  - but you can
+- the variable is {{ myvariable }}
+- if the value starts with a variable, it should be between double quotes
+  - msg: "{{ myvariable }} is set"
+- if used in a when statement curly braces are optional
+
+examples:
+
+  (from ansiblecvc/basics/)
+  ansible-playbook variables_example.yaml 
+
+  (-e is --extra-variables)
+  ansible-playbook variables_example.yaml -e user=bob
+
+5.3 - Where to define your variables
+
+- defining variables
+
+  - In play header
+
+  ---
+  - name: create a user using a variable
+    hosts: rocky
+    vars:
+      user: lisa
+
+  - In play header with var_files: key
+
+    (in header)
+    vars_files: myvars.yaml
+
+    (in myvars.yaml)
+    mypackage: nmap
+
+  - Using the set_fact module in a play
+
+      tasks:
+      - set_fact:
+        myvar: myvaluea 
+      ...
+
+  - On command line with the -e key=value option
+
+  - Using vars_prompt: to request values when running playbook
+
+    - use private: no to allow the user to see the value entered
+
+    vars_prompt:
+      - name: package
+        prompt: which package do you want to install
+        private: no
+    tasks:
+
+    - only valid in current play
+
+  - As inventory variables
+
+  - As host or host_group variables
+
+    - host variables are defined in host_vars/ with the file name matching the host
+    - group variables are defined in group_vars/ with the file name matching the group
+
+- Ansible facts are discovered variables containing system properties
+
+- Ansible Vault can be used to encrypt sensitive variables
+
+5.4 Using ansible facts
+
+- Ansible facts are system variables that contain information about the managed system
+
+- Each playbook starts with an implicit task to gather facts
+
+- ansible drqansible1 -m setup > drqansible1 (to list hosts variables)
+
+Example using gather_facts.yaml (from ansiblecvc)
+
+- setup uses names such as ansible_xxxxx, where gather_facts uses xxxxxx inside of a glob named
+ansible_facts. New vs old.
+
+5.5 - Understanding differnt notations for facts and varilables
+
+- ansible_facts is a dictonary
+
+- two (new) formats can be used:
+
+  - preferred: ansible_facts['default_ipv4']['address']
+           or: ansible_facts.default_ipv4.address
+
+- old way:
+  - ansible_default_ipv4
+
+exemples using old_facts.yaml, and new_facts.yaml
+
+
+
+5.6 - Speeding up gathering facts
+
+- Fact cache
+
+- 11.6 will show you how to create a cache
+
+- ensure /etc/hosts will allow for quick name resolution on the remote hosts as well
+
+5.7 Multi-valued variables
+
+- dictionaries (hashes) vs arrays (lists)
+
+  - like python
+
+  - list = ["one", "two", "three"]
+  - print(list[0])
+
+  - hash = {1: 'one', 2: 'two', 3: 'three'}
+  - print(hash)
+
+  - can be used in playbooks
+
+  - dictionaries are used in ansible facts
+
+  - arrays are common for multi-valued variables and easily support loops 
+
+  - dicts are not supported in loops directly. By using dict2items filer
+
+    - See ansible docs "Iterating over a dictionary"
+
+  - dict syntax (two ways):
+
+    users:
+      linda:
+        username: linda
+        shell: /bin/bash
+      lisa:
+        username: lisa
+        shell: /bin/sh
+
+    users:
+      linda:{username: 'linda', shell: '/bin/bash'}
+      lisa:{username: 'lisa', shell: '/bin/sh'}
+
+  - to addressitems
+
+    - users['linda']['shell']
+    - users.linda.shell
+
+  - dicts are used for facts, use arrays in conditionals
+
+  - dicts can be part of a list (as in ansible facts)
+
+  - array syntax:
+
+    users:
+    - username: linda
+      shell: /bin/bash
+    - username: lisa
+      shell: /bin/sh
+
+  - individual items addresses as {{ var_name[0] }}
+
+  - Use arrays for looping
+
+  - with_items or loop
+
+  Examples in ansiblecvs/basics/arrays
+
+
+5.8 - Using Magic Variables
+
+  - special reserved system variables
+    - hostvars
+    - groups
+    - group_names
+    - inventory_hostname
+    - inventory_hostname_short
+    - and more
+
+  - hostvars can be to address facts or variables from other hosts:
+    host: {{ hostvars['ansible2']['ansible_facts']['distribution'] }}
+
+  - groups can be used to list all hosts in a group:
+    {% for host in groups['webservers'] %}
+
+  - group_names has inventory groups a host is in:
+    {% if 'webservers' in group_names %}
+
+  - inventory_hostame or (_short) can used to address a host as an alternative to ansible_hostname
+    when fact-gathering is disabled
+
+5.9 - Using Register
+
+- can be used to store the resu;t of a task in a variable
+
+- looking at register.yaml
+
+
+5.10 - Using Vault to store sensitive information
+
+- ansible-vault can be used to decrypt encrypt files
+
+- ansible-vault create secret.yml
+
+  - username: bob
+  - pwhash: password
+
+- vim create-user.yml
+
+- ansible-playbook -ask-vault-pass create-users.yml
+
+- echo password > vault-pass
+
+- ansible-playbook --vault-password-file=vault-pass create-users.yml 

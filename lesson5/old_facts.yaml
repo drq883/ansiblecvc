@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+  - name: show IP address
+    debug:
+      # > allows multi-line messages
+      msg: >
+        This host uses IP address {{ ansible_default_ipv4.address }}

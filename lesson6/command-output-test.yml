@@ -1,0 +1,15 @@
+---
+- name: test command output
+  hosts: drqansible1
+  tasks:
+    - name: test for VG existence
+      command: vgs rl
+      register: vgout
+      ignore_errors: True
+    - name: show variable value
+      debug:
+        var: vgout
+    - name: print message
+      debug:
+        msg: vg does not exist
+      when: "'not found' in vgout.stderr"

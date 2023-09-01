@@ -1,0 +1,9 @@
+---
+- name: set SELinux to disabled
+  hosts: localhost
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: set SELinux to disabled
+    ansible.posix.selinux:
+      state: disabled

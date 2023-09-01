@@ -1,0 +1,14 @@
+Setting up Privilege Escalation
+
+  echo 'ansible ALL=(ALL) NOPASSWD: ALL' > /tmp/sudoers
+  sudo cp /tmp/sudoers /etc/sudoers.d/ansible
+  ansible rocky -i inventory -u root -k -m copy -a "src=/tmp/sudoers dest=/etc/sudoers.d/ansible"
+  ansible ubuntu -i inventory -u student -k -b -K -m copy -a "src=/tmp/sudoers dest=/etc/sudoers.d/ansible"
+
+  ansible freebsd -i inventory -u root -k -m file -a "path=/usr/local/etc/sudoers.d state=directory"
+  ansible freebsd -i inventory -u root -k -m copy -a "src=/tmp/sudoers dest=/usr/local/etc/sudoers.d/ansible"
+
+Testing it:
+
+  ansible all -i inventory -m command -a "ls -l /root" -b
+

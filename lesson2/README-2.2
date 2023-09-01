@@ -1,0 +1,33 @@
+Documentation 
+
+  Pre-2.10
+    ansible-doc -l
+
+  2.10 and later:
+    ansible-doc -t module -l
+
+ansible.builtin.command is the default module:
+
+  ansible all -a "ls -a /root"
+
+ansible.builtin.shell used if pipes are neccesary
+
+ansible.builtint.raw will run with out the need for python
+  ansible all -m raw -a "ls -a /root"
+
+ansible.builtin.package for managing packages
+
+ansible.builtin.user for managing users
+
+ansible.builtin.service for managing services
+
+
+Best Practices:
+
+- Always use the most specific module you can find
+  - don't always default to "command" or "shell"
+- Using generic modules often leads to problems
+  - might not do well with desired state 
+- Idempotency - if current state matches, it will not fail
+
+    
