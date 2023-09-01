@@ -1,0 +1,10 @@
+---
+- name: Fix sudoers
+  hosts: all
+  tasks:
+  - name: Update sudoers
+    lineinfile:
+      path: /etc/sudoers
+      line: 'Defaults:ansible !requiretty'
+      validate: /usr/sbin/visudo -cf %s
+  

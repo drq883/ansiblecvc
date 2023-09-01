@@ -1,0 +1,24 @@
+Configure security
+
+- Commonly used but insecure
+  - passphrase-less SSH keys to connect to remote hosts
+  - become=true as std setting
+  - passwordless priv escallation
+
+- More secure but not convenient
+  - -b -K when needed
+    -b become when needed
+    -K to enter sudo password
+
+- Securing SSH connections
+  - Use ssh-keygen to generate a key protected by a password
+  - Use "eval ssh-agent $SHELL" to start the ssh agent after login
+  - Use ssh-add ~/.ssh/id_rsa to add you identity to the agent
+  - Verify using ssh-add -l
+
+- Put in .bashrc, etc to automate it
+  if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval `ssh-agent -s`
+    ssh-add ~/.ssh/id_rsa
+  fi
+

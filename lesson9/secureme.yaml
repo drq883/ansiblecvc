@@ -1,0 +1,6 @@
+---
+- name: secure sudo
+  hosts: all
+  :x
+
+

@@ -1,0 +1,47 @@
+Configuring Managed Hosts with Ad-hoc Commands
+
+cat <<HOSTS >inventory
+ubuntu
+ansible1
+ansible2
+freebs]
+HOSTS
+
+You should ssh once to each host to setup an entry in the known_hosts file
+
+setup ubuntu user with a name ansible (ubuntu needs admin user, not root):
+
+  ansible -i inventory ubuntu -m user -a "name=ansible create_home=yes" -u drq -b -k -K
+
+for ansible1/2
+
+  ansible -i inventory rocky -m user -a "name=ansible create_home=yes" -u root -k
+
+for freebsd:
+
+  ansible -i inventory freebsd -m user -a "name=ansible create_home=yes" -u root -k
+
+for tower:
+
+  ansible -i inventory tower -m user -a "name=ansible create_home=yes" -u root -k
+
+Now let's set passwords for the user ansible:
+
+  ansible -i inventory ubuntu -m shell -a "echo 'ansible:password' | chpasswd" -u student -b -k -K
+  ansible -i inventory rocky -m shell -a "echo password | passwd --stdin ansible" -u root -k
+  # had to manually set password on FreeBSD
+
+Create a key-pair on control node and copy to hosts:
+
+  ssh-keygen   /* press enter for all prompts */
+
+  ssh-copy-id ubuntu
+  ssh-copy-id ansible1
+  ssh-copy-id ansible2
+  ssh-copy-id freebsd
+
+And test:
+
+  ansible -i inventory all -m command -a "id" -u ansible
+
+
